@@ -24,6 +24,9 @@ ApplicationWindow {
         height: 50
         width: 500
         text: "opa"
+        function setLog(str) {
+            labelLog.text = str;
+        }
     }
     Dial {
         id: dial
@@ -530,7 +533,7 @@ ApplicationWindow {
             height: 32            
             model: listModel
             textRole: "display"
-            currentIndex: comIndex
+            //currentIndex: 0
             function setIndex(i) {
                 labelLog.text = i;
                 comComboBox.currentIndex=i;
@@ -547,7 +550,19 @@ ApplicationWindow {
             y: 35
             width: 75
             height: 30
-            text: qsTr("Connect")
+            text: "Connect"
+            signal connectSignal(bool x)
+            signal sendPortName(var str);
+            function connectState(state) {
+                if(state) {
+                    comButConnect.text = "Disconnect";
+                    comButConnect.background.color = "#ffffff";
+                } else {
+                    comButConnect.text = "Connect";
+                    comButConnect.background.color = "#5b8021";
+                }
+            }
+
             background: Rectangle {
                color: comButConnect.pressed ? " #1a6938" : "#5b8021"
                implicitWidth: 150
@@ -557,7 +572,12 @@ ApplicationWindow {
                radius: 4
             }
             onClicked: {
-
+                if(comButConnect.text === "Connect"){
+                    sendPortName(comComboBox.currentText);
+                    connectSignal(true);
+                } else {
+                    connectSignal(false);
+                }
             }
         }
     }

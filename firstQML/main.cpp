@@ -49,6 +49,7 @@ int main(int argc, char *argv[])
     QObject::connect(connectButton, SIGNAL(connect_tcp()),backend,SLOT(connectFromQml()));
     QObject::connect(connectButton, SIGNAL(disconnect_tcp()),backend,SLOT(disconnectFromQml()));
     QObject* labelLog = info->findChild<QObject*>("labelLog");
+    QObject::connect(uart,SIGNAL(setLog(QVariant)),labelLog,SLOT(setLog(QVariant)));
     backend->setQmlObjectLog(*labelLog);
     QObject* labelVoltageAmplitude = info->findChild<QObject*>("labelVoltageAmplitude");
     backend->setLabelVoltageAmplitude(*labelVoltageAmplitude);
@@ -93,7 +94,9 @@ int main(int argc, char *argv[])
     QObject::connect(resButSet,SIGNAL(resBut_clicked(int)),backend,SLOT(onResBut(int)));
     //! UART CONNECTION OBJECTS
     QObject* comButConnect = info->findChild<QObject*>("comButConnect");
-    //QObject::connect(comButConnect,SIGNAL(),backend,SLOT());
+    QObject::connect(comButConnect,SIGNAL(connectSignal(bool)),uart,SLOT(connectSlot(bool)));
+    QObject::connect(comButConnect,SIGNAL(sendPortName(QVariant)),uart,SLOT(receivePortName(QVariant)));
+    QObject::connect(uart,SIGNAL(sendConnectedState(QVariant)),comButConnect,SLOT(connectState(QVariant)));
     QObject* comComboBox = info->findChild<QObject*>("comComboBox");
     QObject::connect(sender,SIGNAL(setProp(QVariant)), comComboBox, SLOT(setIndex(QVariant)));
     //QObject* comModel = info->findChild<QObject*>("comModel");
